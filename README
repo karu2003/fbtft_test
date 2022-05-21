@@ -2,6 +2,7 @@ fbtft_test
 ==========
 
 Project for testing Linux Framebuffer drivers.
+tested on RPi Zero HDMI output. changed for Pothon 3
 
 Run tests: python test_fb.py
 

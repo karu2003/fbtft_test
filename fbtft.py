@@ -66,13 +66,13 @@ class FBTFTdevice:
 		self.autoload = autoload
 		if not devname: devname = name
 		self.devname = devname
-		cmd = ["modprobe", "--first-time", "fbtft_device", "name=%s" % devname] + ["%s=%s" %(k,v) for k,v in dev.iteritems()]
+		cmd = ["modprobe", "--first-time", "fbtft_device", "name=%s" % devname] + ["%s=%s" %(k,v) for k,v in dev.items()]
 		print("\n")
-		print " ".join(cmd)
+		print(" ".join(cmd))
 		sudocall(cmd)
 		if not self.autoload:
-			cmd = ["modprobe", self.name] + ["%s=%s" %(k,v) for k,v in drv.iteritems()]
-			print " ".join(cmd)
+			cmd = ["modprobe", self.name] + ["%s=%s" %(k,v) for k,v in drv.items()]
+			print(" ".join(cmd))
 			sudocall(cmd)
 		time.sleep(wait)
 		self.fbdev = Framebuffer("/dev/fb1")
@@ -100,13 +100,13 @@ class FBTFTdevice:
 
 class ADS7846device:
 	def __init__(self, dev={}, drv={}):
-		cmd = ["modprobe", "--first-time", "ads7846_device"] + ["%s=%s" %(k,v) for k,v in dev.iteritems()]
+		cmd = ["modprobe", "--first-time", "ads7846_device"] + ["%s=%s" %(k,v) for k,v in dev.items()]
 		print("")
-		print " ".join(cmd)
+		print(" ".join(cmd))
 		sudocall(cmd)
-		cmd = ["modprobe", "ads7846"] + ["%s=%s" %(k,v) for k,v in drv.iteritems()]
+		cmd = ["modprobe", "ads7846"] + ["%s=%s" %(k,v) for k,v in drv.items()]
 		print("")
-		print " ".join(cmd)
+		print(" ".join(cmd))
 		sudocall(cmd)
 
 	def __enter__(self):
@@ -126,13 +126,13 @@ class ADS7846device:
 
 class GPIO_MOUSEdevice:
 	def __init__(self, dev={}, drv={}):
-		cmd = ["modprobe", "--first-time", "gpio_mouse_device"] + ["%s=%s" %(k,v) for k,v in dev.iteritems()]
+		cmd = ["modprobe", "--first-time", "gpio_mouse_device"] + ["%s=%s" %(k,v) for k,v in dev.items()]
 		print("")
-		print " ".join(cmd)
+		print(" ".join(cmd))
 		sudocall(cmd)
-		cmd = ["modprobe", "gpio_mouse"] + ["%s=%s" %(k,v) for k,v in drv.iteritems()]
+		cmd = ["modprobe", "gpio_mouse"] + ["%s=%s" %(k,v) for k,v in drv.items()]
 		print("")
-		print " ".join(cmd)
+		print(" ".join(cmd))
 		sudocall(cmd)
 
 	def __enter__(self):
@@ -152,7 +152,7 @@ class GPIO_MOUSEdevice:
 
 def lsmod():
 #	if not "fbtft" in subprocess.check_output("lsmod"):
-	print subprocess.check_output("lsmod")
+	print(subprocess.check_output("lsmod"))
 
 # by BlackJack
 def get_revision():
@@ -184,7 +184,7 @@ def mplayer_test(x, y, playlength=6):
 def startx_test(wait=True):
 	os.environ['FRAMEBUFFER'] = "/dev/fb1"
 	print("\nX test")
-	print "    To end the test, click Off button in lower right corner and press Alt-l (lowercase L) to logout (if screen is too small)"
+	print("    To end the test, click Off button in lower right corner and press Alt-l (lowercase L) to logout (if screen is too small)")
 	if wait:
 		call(["startx"])
 		return
@@ -230,7 +230,7 @@ def bl_pwm_test(dev):
 		dev.fbdev.fill(0)
 		c = dev.fbdev.rgb(255,0,0)
 		msg(dev.fbdev, "Brightness    ", c, 2)
-		for i in range(0, max_brightness, 10) + [actual_brightness]:
+		for i in list(range(0, max_brightness, 10)) + [actual_brightness]:
 			msg(dev.fbdev, "           %s" % (3*chr(255)), 0, 2)
 			msg(dev.fbdev, "           %3d" % i, c, 2)
 			sudoecho(file, "%d" % i)

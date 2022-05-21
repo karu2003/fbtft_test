@@ -70,7 +70,7 @@ for rotate in [0]:
 			mplayer_test(160, 128)
 
 
-raw_input("Nokia 3310, move chip select :")
+input("Nokia 3310, move chip select :")
 
 if get_board_revision() == 1:
 	P1_13 = 21

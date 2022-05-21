@@ -37,10 +37,8 @@ class Framebuffer(gfx.BaseGFX):
 		self.fbfd = os.open(dev, os.O_RDWR)
 		vinfo = struct.unpack("8I12I16I4I", fcntl.ioctl(self.fbfd, FBIOGET_VSCREENINFO, " "*((8+12+16+4)*4)))
 		finfo = struct.unpack("16cL4I3HI", fcntl.ioctl(self.fbfd, FBIOGET_FSCREENINFO, " "*48))
-
-		bytes_per_pixel = (vinfo[6] + 7) / 8
+		bytes_per_pixel = int((vinfo[6] + 7) / 8)
 		screensize = vinfo[0] * vinfo[1] * bytes_per_pixel
-
 		fbp = mmap.mmap(self.fbfd, screensize, flags=mmap.MAP_SHARED, prot=mmap.PROT_READ|mmap.PROT_WRITE)
 
 		self.fbp = fbp
@@ -56,7 +54,8 @@ class Framebuffer(gfx.BaseGFX):
 		self.blue = gfx.Bitfield(vinfo[14], vinfo[15], vinfo[16])
 		self.transp = gfx.Bitfield(vinfo[17], vinfo[18], vinfo[19])
 		self.nonstd = vinfo[20]
-		self.name = ''.join([x for x in finfo[0:15] if x != '\x00'])
+		#self.name = ''.join([x for x in finfo[0:15] if x != '\x00'])
+		self.name = b" ".join([x for x in finfo[0:15] if x != '\x00'])
 		self.type = finfo[18]
 		self.visual = finfo[20]
 		self.line_length = finfo[24]
@@ -90,18 +89,28 @@ class Framebuffer(gfx.BaseGFX):
 
 #		"    geometry 176 220 176 220 16\n"
 
-		return \
-		"mode \"%sx%s\"\n" % (self.xres, self.yres) + \
-		"    nonstd %s\n" % self.nonstd + \
-		"    rgba %s/%s,%s/%s,%s/%s,%s/%s\n" % (self.red.length, self.red.offset, self.green.length, self.green.offset, self.blue.length, self.blue.offset, self.transp.length, self.transp.offset) + \
-		"endmode\n" + \
-		"\n" + \
-		"Frame buffer device information:\n" + \
-		"    Device      : %s\n" % self.dev + \
-		"    Name        : %s\n" % self.name + \
-		"    Size        : %s\n" % self.screensize + \
-		"    Type        : %s\n" % type_name + \
-		"    Visual      : %s\n" % visual_name + \
-		"    LineLength  : %s\n" % self.line_length
-
+		return(
+			"mode \"%sx%s\"\n" % (self.xres, self.yres) 
+			+ "    nonstd %s\n" % self.nonstd 
+			+ "    rgba %s/%s,%s/%s,%s/%s,%s/%s\n"
+			% (
+				self.red.length,
+				self.red.offset,
+				self.green.length,
+				self.green.offset,
+				self.blue.length,
+				self.blue.offset,
+				self.transp.length,
+				self.transp.offset,
+			)
+			+ "endmode\n"
+			+ "\n"
+			+ "Frame buffer device information:\n"
+			+ "    Device      : %s\n" % self.dev 
+			+ "    Name        : %s\n" % self.name 
+			+ "    Size        : %s\n" % self.screensize 
+			+ "    Type        : %s\n" % type_name 
+			+ "    Visual      : %s\n" % visual_name 
+			+ "    LineLength  : %s\n" % self.line_length
+		)
 
